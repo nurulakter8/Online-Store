@@ -7,14 +7,14 @@ import * as util from './util.js'
 
 export function addEventListneres() {
 
-	Element.menuCart.addEventListener('click', async ()=> {
-		history.pushState(null,null, Route.routePathname.CART);
+	Element.menuCart.addEventListener('click', async () => {
+		history.pushState(null, null, Route.routePathname.CART);
 		await cart_page();
 	});
 }
 
 export async function cart_page() {
-	if(!Auth.currentUser){
+	if (!Auth.currentUser) {
 		Element.root.innerHTML = '<h1>Protected Page</h1>'
 		return;
 	}
@@ -22,12 +22,12 @@ export async function cart_page() {
 
 	const cart = Home.cart;
 
-	if(!cart || cart.getTotalQty() == 0){
-		html+= '<h1>Empty!!</h1>';
-		return; 
+	if (!cart || cart.getTotalQty() == 0) {
+		html += '<h1>Empty!!</h1>';
+		return;
 	}
 
-	html+= `
+	html += `
 	<table class="table table-striped">
   <thead>
     <tr>
@@ -55,15 +55,15 @@ export async function cart_page() {
 		`;
 	})
 
-	html+='</tbody></table>'
+	html += '</tbody></table>'
 
-	html+= `
+	html += `
 	<div style="font-size: 150%;"> 
 		Total: ${util.currency(cart.getTotalPrice())}
 	</div>
 	`;
 
-	html+= `
+	html += `
 		<button id="button-checkout" class="btn btn-outline-primary">Check Out</button>
 		<button id="button-continue" class="btn btn-outline-primary">Continue Shopping</button>
 
@@ -73,19 +73,23 @@ export async function cart_page() {
 
 	const continueButton = document.getElementById('button-continue');
 	continueButton.addEventListener('click', async () => {
-		history.pushState(null,null,Route.routePathname.HOME);
+		history.pushState(null, null, Route.routePathname.HOME);
 		await Home.home_page();
 	})
 
 	const checkOutButton = document.getElementById('button-checkout');
 	checkOutButton.addEventListener('click', async () => {
+		const label = util.disableButton(checkOutButton);
+		await util.sleep(1000);
 		// save cart as purchase in Firestore
 
 		util.info('Success!', 'Checkout Complete')
 		window.localStorage.removeItem(`cart-${Auth.currentUser.uid}`);
 		cart.empty();
-		Element.shoppingCartCount.innerHTML= '0'
-		history.pushState(null,null,Route.routePathname.HOME);
+		Element.shoppingCartCount.innerHTML = '0'
+		history.pushState(null, null, Route.routePathname.HOME);
 		await Home.home_page();
+		util.enableButton(checkOutButton, label);
+
 	})
 }

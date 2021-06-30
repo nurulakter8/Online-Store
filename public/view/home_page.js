@@ -10,7 +10,10 @@ import { ShoppingCart } from '../model/ShoppingCart.js'
 export function addEventListneres() {
 	Element.menuHome.addEventListener('click', async () => {
 		history.pushState(null, null, Route.routePathname.HOME)
+		const label = Util.disableButton(Element.menuHome);
 		await home_page();
+		Util.enableButton(Element.menuHome,label);
+
 	});
 }
 
