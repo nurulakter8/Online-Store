@@ -1,5 +1,9 @@
 import * as Element from '../view/element.js'
 import * as FirebaseController from './firebase_controller.js'
+import * as Util from '../view/util.js'
+import * as Constant from '../model/constant.js'
+
+export let currentUser;
 
 export function addEventListneres(){
 
@@ -12,7 +16,45 @@ export function addEventListneres(){
 			await FirebaseController.signIn(email, password);
 			Element.modalSignin.hide();
 		} catch (e) {
-			console.log(e)		
+			if(Constant.DEV) console.log(e);
+			Util.info('Sign in error', JSON.stringify(e), Element.modalSignin);
+
+		}
+	})
+
+	Element.menuSignout.addEventListener('click', async () => {
+		try {
+			await FirebaseController.signOut();
+		} catch (e) {
+			if(Constant.DEV) console.log(e);
+			Util.info('Sign out error', JSON.stringify(e));
+		}
+	})
+
+	firebase.auth().onAuthStateChanged( async user => {
+		if (user) {
+			currentUser = user;
+			let elements = document.getElementsByClassName('modal-pre-auth');
+			for (let i = 0; i < elements.length; i++){
+				elements[i].style.display = 'none';
+			}
+
+			 elements = document.getElementsByClassName('modal-post-auth');
+			for (let i = 0; i < elements.length; i++){
+				elements[i].style.display = 'block';
+			}
+			
+		} else {
+			currentUser = null;
+			let elements = document.getElementsByClassName('modal-pre-auth');
+			for (let i = 0; i < elements.length; i++){
+				elements[i].style.display = 'block';
+			}
+
+			 elements = document.getElementsByClassName('modal-post-auth');
+			for (let i = 0; i < elements.length; i++){
+				elements[i].style.display = 'none';
+			}
 		}
 	})
 
