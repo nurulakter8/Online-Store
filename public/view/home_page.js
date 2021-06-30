@@ -8,13 +8,13 @@ import { ShoppingCart } from '../model/ShoppingCart.js'
 
 
 export function addEventListneres() {
-	Element.menuHome.addEventListener('click', async ()=> {
-		history.pushState(null,null, Route.routePathname.HOME)
+	Element.menuHome.addEventListener('click', async () => {
+		history.pushState(null, null, Route.routePathname.HOME)
 		await home_page();
 	});
 }
 
-let cart;
+export let cart;
 
 export async function home_page() {
 
@@ -23,6 +23,12 @@ export async function home_page() {
 	let products;
 	try {
 		products = await FirebaseController.getProductList();
+		if(cart) {
+			cart.items.forEach(item => {
+				const product = products.find(p => item.docId ==p.docId)
+				product.qty = item.qty;
+			})
+		}
 	} catch (e) {
 		if (Constant.DEV) console.log(e);
 		Util.info('cannot get product list', JSON.stringify(e));
@@ -30,8 +36,8 @@ export async function home_page() {
 	}
 
 	for (let i = 0; i < products.length; i++) {
-		html+= buildProductCard(products[i], i);
-		
+		html += buildProductCard(products[i], i);
+
 	}
 	Element.root.innerHTML = html;
 
@@ -39,23 +45,25 @@ export async function home_page() {
 	for (let i = 0; i < decForms.length; i++) {
 		decForms[i].addEventListener('submit', e => {
 			e.preventDefault();
-			const p = products[e.target.index.value]; 
+			const p = products[e.target.index.value];
 			// dec p to
 			cart.removeItem(p);
 			document.getElementById('qty-' + p.docId).innerHTML = (p.qty == null || p.qty == 0) ? 'Add' : p.qty;
+			Element.shoppingCartCount.innerHTML = cart.getTotalQty();
 		})
 	}
 	const incForms = document.getElementsByClassName('form-inc-qty');
 	for (let i = 0; i < decForms.length; i++) {
 		incForms[i].addEventListener('submit', e => {
 			e.preventDefault();
-			const p = products[e.target.index.value]; 
+			const p = products[e.target.index.value];
 			// add p to shopping
 			cart.addItem(p);
 			document.getElementById('qty-' + p.docId).innerHTML = p.qty;
+			Element.shoppingCartCount.innerHTML = cart.getTotalQty();
 
 		})
-		
+
 	}
 }
 
@@ -88,7 +96,14 @@ function buildProductCard(product, index) {
 
 }
 
-export function initShoppingCart(){
-	cart = new ShoppingCart(Auth.currentUser.uid);
+export function initShoppingCart() {
 
+	const carString = window.localStorage.getItem('cart-' + Auth.currentUser.uid);
+	cart = ShoppingCart.parse(carString);
+	if(!cart || !cart.isValid() || cart.uid != Auth.currentUser.uid){
+		window.localStorage.removeItem('cart-' + Auth.currentUser.uid);
+		cart = new ShoppingCart(Auth.currentUser.uid);
+	}
+
+	Element.shoppingCartCount.innerHTML = cart.getTotalQty();
 }

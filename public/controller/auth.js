@@ -14,7 +14,8 @@ export function addEventListneres(){
 		e.preventDefault();
 		const email = e.target.email.value;
 		const password = e.target.password.value;
-
+		const button = e.target.getElementsByTagName('button')[0];
+		const label = Util.disableButton(button);
 		try {
 			await FirebaseController.signIn(email, password);
 			Element.modalSignin.hide();
@@ -23,6 +24,7 @@ export function addEventListneres(){
 			Util.info('Sign in error', JSON.stringify(e), Element.modalSignin);
 
 		}
+		Util.enableButton(button,label);
 	})
 
 	Element.menuSignout.addEventListener('click', async () => {
