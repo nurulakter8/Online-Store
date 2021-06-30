@@ -4,6 +4,7 @@ import * as Auth from '../controller/auth.js'
 import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Constant from '../model/constant.js'
 import * as Util from './util.js'
+import { ShoppingCart } from '../model/ShoppingCart.js'
 
 
 export function addEventListneres() {
@@ -12,6 +13,8 @@ export function addEventListneres() {
 		await home_page();
 	});
 }
+
+let cart;
 
 export async function home_page() {
 
@@ -32,7 +35,28 @@ export async function home_page() {
 	}
 	Element.root.innerHTML = html;
 
+	const decForms = document.getElementsByClassName('form-dec-qty');
+	for (let i = 0; i < decForms.length; i++) {
+		decForms[i].addEventListener('submit', e => {
+			e.preventDefault();
+			const p = products[e.target.index.value]; 
+			// dec p to
+			cart.removeItem(p);
+			document.getElementById('qty-' + p.docId).innerHTML = (p.qty == null || p.qty == 0) ? 'Add' : p.qty;
+		})
+	}
+	const incForms = document.getElementsByClassName('form-inc-qty');
+	for (let i = 0; i < decForms.length; i++) {
+		incForms[i].addEventListener('submit', e => {
+			e.preventDefault();
+			const p = products[e.target.index.value]; 
+			// add p to shopping
+			cart.addItem(p);
+			document.getElementById('qty-' + p.docId).innerHTML = p.qty;
 
+		})
+		
+	}
 }
 
 function buildProductCard(product, index) {
@@ -45,14 +69,14 @@ function buildProductCard(product, index) {
 			  ${product.summary}
 			</p>
 			<div class="container pt-3 bg-light ${Auth.currentUser ? 'd-block' : 'd-none'}">
-				<form method="post" class="d-inline"> 
+				<form method="post" class="d-inline form-dec-qty"> 
 					<input type="hidden" name="index" value="${index}">
 					<button class= "btn btn-outline-danger" type="submit">&minus;</button>  
 				</form>
-				<div class ="container rounded text-center text-white bg-primary d-inline-block w-50">
+				<div id="qty-${product.docId}" class ="container rounded text-center text-white bg-primary d-inline-block w-50">
 					${product.qty == null || product.qty == 0 ? 'Add' : product.qty} 
 				</div>
-				<form method="post" class="d-inline"> 
+				<form method="post" class="d-inline form-inc-qty"> 
 				<input type="hidden" name="index" value="${index}">
 				<button class= "btn btn-outline-primary" type="submit">&plus;</button>  
 			</form>
@@ -61,5 +85,10 @@ function buildProductCard(product, index) {
 		</div>
   	</div>
 	`;
+
+}
+
+export function initShoppingCart(){
+	cart = new ShoppingCart(Auth.currentUser.uid);
 
 }
