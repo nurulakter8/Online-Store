@@ -4,7 +4,7 @@ import * as Util from '../view/util.js'
 import * as Constant from '../model/constant.js'
 import * as Route from './route.js'
 import * as Home from '../view/home_page.js'
-
+import * as Profile from '../view/profile_page.js'
 
 export let currentUser;
 
@@ -40,6 +40,8 @@ export function addEventListneres(){
 		if (user) {
 			currentUser = user;
 
+			await Profile.getAccountInfo(user);
+
 			Home.initShoppingCart();
 
 			let elements = document.getElementsByClassName('modal-pre-auth');
@@ -69,6 +71,34 @@ export function addEventListneres(){
 			const pathname = window.location.pathname;
 			const hash = window.location.hash;
 			Route.routing(pathname,hash);
+		}
+	})
+
+	Element.buttonSignup.addEventListener('click', ()=>{
+		Element.modalSignin.hide();
+		Element.formSignUp.reset();
+		Element.formsignuppassworderror.innerHTML ='';
+		Element.modalsignup.show();
+	})
+
+	Element.formSignUp.addEventListener('submit', async e=> {
+		e.preventDefault();
+		const email = e.target.email.value;
+		const password = e.target.password.value;
+		const passwordConfirm = e.target.passwordConfirm.value;
+
+		Element.formsignuppassworderror.innerHTML = ''
+		if(password != passwordConfirm){
+			Element.formsignuppassworderror.innerHTML = 'Two password do not match';
+			return;
+		}
+
+		try {
+			await FirebaseController.createUser(email,password);
+			Util.info('Account Created', `You are now signed in as ${email}`, Element.modalsignup);
+		} catch (e) {
+			if (Constant.DEV) console.log(e);
+			Util.info(' error ', JSON.stringify(e), Element.modalsignup);
 		}
 	})
 

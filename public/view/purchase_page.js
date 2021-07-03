@@ -8,8 +8,10 @@ import * as util from './util.js'
 
 export function addEventListneres() {
 	Element.menuPurchase.addEventListener('click', async ()=> {
-		history.pushState(null,null, Route.routePathname.PURCHASE)
+		history.pushState(null,null, Route.routePathname.PURCHASE);
+		const label = util.disableButton(Element.menuPurchase)
 		await purchase_page();
+		util.enableButton(Element.menuPurchase, label);
 	});
 }
 
@@ -72,8 +74,45 @@ export async function purchase_page() {
 		historyForms[i].addEventListener('submit', e=> {
 			e.preventDefault();
 			const index = e.target.index.value;
-			console.log('index= ', index);
+			Element.modalTransactionViewTitle.innerHTML = `Purchased At: ${new Date(carts[index].timestamp).toString()}`;
+			Element.modalTransactionViewBody.innerHTML = buildTransactionView(carts[index]);
+			Element.modalTransactionView.show();
+
 		})
 		
 	}
+}
+
+function buildTransactionView(cart){
+	let html =
+	`
+	<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Image</th>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Qty</th>
+	  <th scope="col">Sub-Total</th>
+	  <th scope="col" width="50%">Summary</th>
+    </tr>
+  </thead>
+  <tbody>
+	`;
+
+	cart.items.forEach(item => {
+		html += `
+		<tr>
+			<td> <img src="${item.imageURL}" width ="150px"></td>
+			<td>${item.name}</td>
+			<td>${util.currency(item.price)}</td>
+			<td>${item.qty}</td>
+			<td>${util.currency(item.qty * item.price)}</td>
+			<td>${item.summary}</td>
+		</tr>
+		`;
+	})
+	html += '</tbody></table>';
+	html += `<div style="font-size: 150%">Total: ${util.currency(cart.getTotalPrice())}</div>`;
+	return html;
 }
