@@ -63,3 +63,16 @@ export async function getAccountInfo(uid) {
 		return defaultInfo;
 	}
 }
+
+export async function updateaAccountInfo(uid, updateInfo){
+	await firebase.firestore().collection(Constant.collectioNames.ACCOUNT_INFO)
+			.doc(uid).update(updateInfo);
+}
+
+export async function uploadProfilePhoto(photoFile, imageName){
+	const ref = firebase.storage().ref()
+					.child(Constant.storageFolderNames.PROFILE_PHOTOS + imageName)
+	const taskSnapShot = await ref.put(photoFile);
+	const photoURL = await taskSnapShot.ref.getDownloadURL();
+	return photoURL;
+}
