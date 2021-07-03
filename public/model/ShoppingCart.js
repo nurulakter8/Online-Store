@@ -7,6 +7,17 @@ export class ShoppingCart {
 		this.items = []; // arrat of serilaz
 	}
 
+	serialize(timestamp){
+		return {uid: this.uid, items: this.items, timestamp};
+	}
+
+	static deserialize(data){
+		const sc = new ShoppingCart(data.uid);
+		sc.items = data.items;
+		sc.timestamp = data.timestamp;
+		return sc;
+	}
+
 	addItem(product) {
 		const item = this.items.find(e => product.docId == e.docId);
 
@@ -30,54 +41,58 @@ export class ShoppingCart {
 		--this.items[index].qty;
 		--product.qty;
 		if (product.qty == 0) {
-			this.items.splice(index,1);
+			this.items.splice(index, 1);
 		}
 		this.saveToLocalStorage();
 
 	}
 
-	saveToLocalStorage(){
+	saveToLocalStorage() {
 		window.localStorage.setItem(`cart-${this.uid}`, this.stringify());
 	}
 
-	stringify(){
-		return JSON.stringify({uid:this.uid, items:this.items})
+	stringify() {
+		return JSON.stringify({ uid: this.uid, items: this.items })
 	}
 
-	static parse(cartString){
+	static parse(cartString) {
+		try {
+			if (!cartString) return null;
+			const obj = JSON.parse(cartString)
+			const sc = new ShoppingCart(obj.uid);
+			sc.items = obj.items;
+			return sc;
+		} catch (e) {
+			return null;
+		}
 
-		if (!cartString) return null;
-		const obj = JSON.parse(cartString)
-		const sc = new ShoppingCart(obj.uid);
-		sc.items = obj.items;
-		return sc;
 
 	}
 
-	isValid(){
-		if(!this.uid) return false;
-		if(!this.items || !Array.isArray(this.items)) return false;
+	isValid() {
+		if (!this.uid) return false;
+		if (!this.items || !Array.isArray(this.items)) return false;
 		for (let i = 0; i < this.items.length; i++) {
-			if(!Products.isSerializedProduct(this.items[i])) return false;
+			if (!Products.isSerializedProduct(this.items[i])) return false;
 		}
 		return true;
 	}
 
-	getTotalQty(){
+	getTotalQty() {
 		let n = 0;
-		this.items.forEach(e=> {n+=e.qty})
+		this.items.forEach(e => { n += e.qty })
 		return n;
 	}
 
-	getTotalPrice(){
+	getTotalPrice() {
 		let total = 0;
 		this.items.forEach(item => {
-			total+= item.price * item.qty;
+			total += item.price * item.qty;
 		})
 		return total;
 	}
 
-	empty(){
-		this.items.length=0;
+	empty() {
+		this.items.length = 0;
 	}
 }
