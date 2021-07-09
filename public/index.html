@@ -74,6 +74,7 @@
 					</form>
 					<div>No Account yet?</div>
 					<button id="button-signUp" class="btn btn-outline-info">Create New Account</button>
+					<button id="button-forgot-password" class="btn btn-outline-danger">Forgot Password</button>
 				</div>
 			</div>
 		</div>
@@ -142,6 +143,31 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Modal: forgot password -->
+	<div class="modal fade" id="modal-forgot-password-form" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1" aria-labelledby="modal-forgot-password-form-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-forgot-password-form-label">Forgot password</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="form-resetPassword" method="post">
+						<div>
+							<input type="email" name="email" placeholder="Email address">
+						</div>
+						<div>
+							<button class="btn btn-outline-danger" type="submit">Reset password</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--end-->
 
 	<div id="root" class="bg-light p-5 m-3"></div>
 

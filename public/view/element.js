@@ -15,8 +15,13 @@ export const shoppingCartCount = document.getElementById('shoppingcart-count')
 export const formSignIn = document.getElementById('form-signin')
 export const formSignUp = document.getElementById('form-signup')
 export const formsignuppassworderror = document.getElementById('form-signup-password-error');
+export const formResetPassword= document.getElementById('form-resetPassword');
+
+
 
 export const buttonSignup = document.getElementById('button-signUp')
+export const buttonForgotPassword = document.getElementById('button-forgot-password')
+
 
 
 //modals 
@@ -28,3 +33,4 @@ export const modalTransactionView = new bootstrap.Modal(document.getElementById(
 export const modalTransactionViewTitle = document.getElementById('modal-transaction-view-title');
 export const modalTransactionViewBody = document.getElementById('modal-transaction-body');
 export const modalsignup = new bootstrap.Modal(document.getElementById('modal-signup'), {backdrop: 'static'});
+export const modalResetPasswordForm = new bootstrap.Modal(document.getElementById('modal-forgot-password-form'),{backdrop: 'static'});

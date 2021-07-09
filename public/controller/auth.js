@@ -102,4 +102,27 @@ export function addEventListneres(){
 		}
 	})
 
+	Element.buttonForgotPassword.addEventListener('click', ()=>{
+		Element.modalSignin.hide();
+		Element.formsignuppassworderror.innerHTML ='';
+		Element.modalResetPasswordForm.show();
+	})
+
+	Element.formResetPassword.addEventListener('submit', async e=> {
+		e.preventDefault();
+		const email = e.target.email.value;
+		try {
+			await FirebaseController.resetPassword(email);
+			Util.info('Email Sent!', 'Please use the link in your email to reset your password', 
+				Element.modalResetPasswordForm);
+			//Element.modalResetPasswordForm.hide();
+		} catch (error) {
+			if (Constant.DEV) console.log(error);
+			Util.info('Error, try different Email', JSON.stringify(error), Element.modalResetPasswordForm);
+		}
+	})
+
+
+
+
 }

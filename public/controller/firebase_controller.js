@@ -13,6 +13,10 @@ export async function signOut (){
 
 }
 
+export async function resetPassword(email) {
+	await firebase.auth().sendPasswordResetEmail(email)
+}
+
 export async function getProductList(){
 	const products = [];
 	const snapShot = await firebase.firestore().collection(Constant.collectioNames.PRODUCTS)
