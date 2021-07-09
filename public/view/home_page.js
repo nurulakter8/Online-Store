@@ -79,6 +79,11 @@ function buildProductCard(product, index) {
 	  		<p class="card-text">${Util.currency(product.price)} <br> 
 			  ${product.summary}
 			</p>
+
+			<div>
+			<button class= "btn btn-outline-primary" type="submit">Reviews</button> 
+			</div>
+			<br>
 			<div class="container pt-3 bg-light ${Auth.currentUser ? 'd-block' : 'd-none'}">
 				<form method="post" class="d-inline form-dec-qty"> 
 					<input type="hidden" name="index" value="${index}">
