@@ -50,3 +50,9 @@ input{
 	box-shadow: #222 1px 0 10px;
 	text-decoration: underline;
   }
+
+  .centered{
+	background: white;
+  text-align: center;
+  vertical-align: middle;
+  }

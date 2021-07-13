@@ -5,6 +5,7 @@ import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Constant from '../model/constant.js'
 import * as Util from './util.js'
 import { ShoppingCart } from '../model/ShoppingCart.js'
+import * as Review from './review_page.js'
 
 
 export function addEventListneres() {
@@ -12,23 +13,25 @@ export function addEventListneres() {
 		history.pushState(null, null, Route.routePathname.HOME)
 		const label = Util.disableButton(Element.menuHome);
 		await home_page();
-		Util.enableButton(Element.menuHome,label);
+		Util.enableButton(Element.menuHome, label);
 
 	});
+
+
 }
 
 export let cart;
 
 export async function home_page() {
 
-	let html = '<h1>Enjoy Shopping</h1>';
+	let html = '<h1>Available Products</h1>';
 
 	let products;
 	try {
 		products = await FirebaseController.getProductList();
-		if(cart) {
+		if (cart) {
 			cart.items.forEach(item => {
-				const product = products.find(p => item.docId ==p.docId)
+				const product = products.find(p => item.docId == p.docId)
 				product.qty = item.qty;
 			})
 		}
@@ -68,6 +71,14 @@ export async function home_page() {
 		})
 
 	}
+	const reviewForm = document.getElementsByClassName('form-review');
+	for (let i = 0; i < reviewForm.length; i++) {
+		reviewForm[i].addEventListener('submit', e => {
+			e.preventDefault();
+			Review.addviewButtonListeners();
+			Review.addViewFormSubmitEvent(reviewForm[i])
+		})
+	}
 }
 
 function buildProductCard(product, index) {
@@ -81,9 +92,13 @@ function buildProductCard(product, index) {
 			</p>
 
 			<div>
-			<button class= "btn btn-outline-primary" type="submit">Reviews</button> 
+				<form method="post" class="d-review form-review">
+				<input type="hidden" name="productId" value="${product.docId}">
+					<button class= "btn btn-outline-primary" type="submit">Reviews</button> 
+				</form>
 			</div>
 			<br>
+
 			<div class="container pt-3 bg-light ${Auth.currentUser ? 'd-block' : 'd-none'}">
 				<form method="post" class="d-inline form-dec-qty"> 
 					<input type="hidden" name="index" value="${index}">
@@ -108,7 +123,7 @@ export function initShoppingCart() {
 
 	const carString = window.localStorage.getItem('cart-' + Auth.currentUser.uid);
 	cart = ShoppingCart.parse(carString);
-	if(!cart || !cart.isValid() || cart.uid != Auth.currentUser.uid){
+	if (!cart || !cart.isValid() || cart.uid != Auth.currentUser.uid) {
 		window.localStorage.removeItem('cart-' + Auth.currentUser.uid);
 		cart = new ShoppingCart(Auth.currentUser.uid);
 	}

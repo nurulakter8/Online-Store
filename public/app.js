@@ -4,6 +4,7 @@ import * as Cart from './view/cart.js'
 import * as Profile from './view/profile_page.js'
 import * as Purchase from './view/purchase_page.js'
 import * as Route from './controller/route.js'
+import * as Review from './view/review_page.js'
 
 
 Auth.addEventListneres();
@@ -11,6 +12,7 @@ Home.addEventListneres();
 Cart.addEventListneres();
 Profile.addEventListneres();
 Purchase.addEventListneres();
+//Review.addEventListeners();
 
 window.onload =() => {
 	const pathname = window.location.pathname;

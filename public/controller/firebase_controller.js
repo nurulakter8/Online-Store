@@ -2,6 +2,7 @@
 import { AccountInfo } from '../model/account_info.js';
 import * as Constant from '../model/constant.js'
 import { Products } from '../model/Product.js';
+import { Reply } from '../model/Reply.js';
 import { ShoppingCart } from '../model/ShoppingCart.js';
 
 export async function signIn (email, password){
@@ -80,3 +81,33 @@ export async function uploadProfilePhoto(photoFile, imageName){
 	const photoURL = await taskSnapShot.ref.getDownloadURL();
 	return photoURL;
 }
+
+
+export async function getOneThread(productId) {
+	const ref = await firebase.firestore()
+		.collection(Constant.collectioNames.PRODUCTS)
+		.doc(productId)
+		.get();
+	if (!ref.exists) return null;
+	const t = new Products(ref.data());
+	t.docId = productId;
+	return t;
+}
+
+export async function getReplayList(productId) {
+	const snapshot = await firebase.firestore()
+		.collection(Constant.collectioNames.REPLIES)
+		.orderBy('timestamp')
+		.get();
+
+	const replies = [];
+	snapshot.forEach(doc => {
+		const r = new Reply(doc.data())
+		r.docId = doc.id;
+		replies.push(r);
+	})
+	return replies;
+}
+
+
+
