@@ -89,7 +89,7 @@ export async function cart_page() {
 
 		try {
 			await FirebaseController.checkOut(cart);
-			util.info('Redirecting', 'Enter Info Below')
+			util.info('Purchased!!', 'Thank you for shopping with us!')
 
 			history.pushState(null, null, Route.routePathname.CHECK);
 			await Check.donate_page();

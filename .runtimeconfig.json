@@ -1,0 +1,6 @@
+{
+  "stripe": {
+    "secret_key": "sk_test_51J6Tc7LDUwi9TcIfmacME4vom2qq8EA7k0yxVyGJU2Q41KYjmU59YkS2yoIC5Bkzrw6l0itUaaulnJCPQvUu9wvz00rT15hVhd",
+    "payments_webhook_secret": "whsec_9rIQmxWBOE7EQ9xRehh7EvOiINbqeooW"
+  }
+}
