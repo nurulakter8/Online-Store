@@ -81,7 +81,7 @@ export async function home_page() {
 	}
 }
 
-function buildProductCard(product, index) {
+export function buildProductCard(product, index) {
 	return `
 	<div class="card" style="width: 18rem; display: inline-block;">
 		<img src="${product.imageURL}" class="card-img-top">

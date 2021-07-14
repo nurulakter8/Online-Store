@@ -97,6 +97,7 @@ export async function getOneThread(productId) {
 export async function getReplayList(productId) {
 	const snapshot = await firebase.firestore()
 		.collection(Constant.collectioNames.REPLIES)
+		.where('productId', '==', productId)
 		.orderBy('timestamp')
 		.get();
 
@@ -109,5 +110,27 @@ export async function getReplayList(productId) {
 	return replies;
 }
 
+export async function addReply(reply) {
+	const ref = await firebase.firestore()
+		.collection(Constant.collectioNames.REPLIES)
+		.add(reply.serialize());
+	return ref.id;
+}
+
+export async function searchThreads(keywordsArray) {
+	let productList = []
+	const snapshot = await firebase.firestore()
+		.collection(Constant.collectioNames.PRODUCTS)
+		.where('keywordsArray', 'array-contains-any', keywordsArray)
+		.orderBy('timestamp', 'desc')
+		.get();
+
+	snapshot.forEach(doc => {
+		const t = new Products(doc.data())
+		t.docId = doc.id;
+		productList.push(t)
+	});
+	return productList;
+}
 
 

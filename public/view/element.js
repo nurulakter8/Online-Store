@@ -12,6 +12,7 @@ export const shoppingCartCount = document.getElementById('shoppingcart-count')
 
 
 //forms 
+export const formSearch = document.getElementById('form-search');
 export const formSignIn = document.getElementById('form-signin')
 export const formSignUp = document.getElementById('form-signup')
 export const formsignuppassworderror = document.getElementById('form-signup-password-error');

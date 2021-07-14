@@ -24,6 +24,10 @@ input{
 	border-width: 0 0 2px 0;
 	width: 100%;
 }
+textarea{
+	width: 100%;
+	min-height: 80px ;
+}
 
 .card {
 	background: #222;
@@ -56,3 +60,12 @@ input{
   text-align: center;
   vertical-align: middle;
   }
+
+  .center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+  }
+
+
+  

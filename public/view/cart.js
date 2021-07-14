@@ -2,6 +2,7 @@ import * as Element from './element.js'
 import * as Route from '../controller/route.js'
 import * as Auth from '../controller/auth.js'
 import * as Home from './home_page.js'
+import * as Check from './checkout_page.js'
 import * as util from './util.js'
 import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Constant from '../model/constant.js'
@@ -88,12 +89,13 @@ export async function cart_page() {
 
 		try {
 			await FirebaseController.checkOut(cart);
-			util.info('Success!', 'Checkout Complete')
+			util.info('Redirecting', 'Enter Info Below')
+
+			history.pushState(null, null, Route.routePathname.CHECK);
+			await Check.donate_page();
 			window.localStorage.removeItem(`cart-${Auth.currentUser.uid}`);
 			cart.empty();
 			Element.shoppingCartCount.innerHTML = '0'
-			history.pushState(null, null, Route.routePathname.HOME);
-			await Home.home_page();
 		} catch (e) {
 			if (Constant.DEV) console.log(e);
 			util.info('checkout error ', JSON.stringify(e));
