@@ -133,4 +133,9 @@ export async function searchThreads(keywordsArray) {
 	return productList;
 }
 
-
+export async function deleteForm(form) {
+	await firebase.firestore()
+		.collection(Constant.collectioNames.PURCHASE_HISTORY)
+		.doc(form)
+		.delete();  // sql = primary key
+}

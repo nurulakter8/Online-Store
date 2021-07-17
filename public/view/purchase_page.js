@@ -41,6 +41,7 @@ export async function purchase_page() {
   <thead>
     <tr>
       <th scope="col">View</th>
+	  <th scope="col">History</th>
       <th scope="col">Items</th>
       <th scope="col">Price</th>
       <th scope="col">Date</th>
@@ -58,6 +59,12 @@ export async function purchase_page() {
 				<button type= "submit" class ="btn btn-outline-primary">Details</button>
 				</form>
 			</td>
+			<td>
+			<form class="form-delete-history" method ="post">
+			<input type="hidden" name="index" value="${i}">
+			<button type= "submit" class ="btn btn-outline-primary">Delete</button>
+			</form>
+		</td>
 			<td>${carts[i].getTotalQty()}</td>
 			<td>${util.currency(carts[i].getTotalPrice())}</td>
 			<td>${new Date(carts[i].timestamp).toString()}</td>
@@ -80,6 +87,16 @@ export async function purchase_page() {
 
 		})
 		
+	}
+
+
+	const deleteForms = document.getElementsByClassName('form-delete-history');
+	for (let i = 0; i < deleteForms.length; i++) {
+		deleteForms[i].addEventListener('submit', async e=> {
+			e.preventDefault();
+			const index = e.target.index.value;
+			await FirebaseController.deleteForm(index);
+		})
 	}
 }
 

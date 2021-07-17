@@ -6,6 +6,8 @@ import * as Constant from '../model/constant.js'
 import * as Util from './util.js'
 import { ShoppingCart } from '../model/ShoppingCart.js'
 import * as Review from './review_page.js'
+import * as Wish from './wishlist_page.js'
+
 
 
 export function addEventListneres() {
@@ -21,12 +23,15 @@ export function addEventListneres() {
 }
 
 export let cart;
+// export let wish;
 
 export async function home_page() {
 
 	let html = '<h1>Available Products</h1>';
 
 	let products;
+	let productsWish;
+
 	try {
 		products = await FirebaseController.getProductList();
 		if (cart) {
@@ -40,6 +45,21 @@ export async function home_page() {
 		Util.info('cannot get product list', JSON.stringify(e));
 		return;
 	}
+/// wish
+
+	// try {
+	// 	productsWish = await FirebaseController.getProductList();
+	// 	if (wish) {
+	// 		wish.items.forEach(item => {
+	// 			const product = productsWish.find(p => item.docId == p.docId)
+	// 			product.qty = item.qty;
+	// 		})
+	// 	}
+	// } catch (e) {
+	// 	if (Constant.DEV) console.log(e);
+	// 	Util.info('cannot get product list', JSON.stringify(e));
+	// 	return;
+	// }
 
 	for (let i = 0; i < products.length; i++) {
 		html += buildProductCard(products[i], i);
@@ -71,6 +91,23 @@ export async function home_page() {
 		})
 
 	}
+
+	const wishForm = document.getElementsByClassName('form-fav');
+	for (let i = 0; i < wishForm.length; i++) {
+		wishForm[i].addEventListener('submit', e => {
+			e.preventDefault();
+
+			// FirebaseController.addFav(wishForm[i]);
+			const p = products[e.target.index.value];
+			// add p to shopping
+			cart.addItem(p);
+			document.getElementById('qty-' + p.docId).innerHTML = p.qty;
+			Element.shoppingCartCount.innerHTML = cart.getTotalQty();
+
+		})
+
+	}
+
 	const reviewForm = document.getElementsByClassName('form-review');
 	for (let i = 0; i < reviewForm.length; i++) {
 		reviewForm[i].addEventListener('submit', e => {
@@ -92,14 +129,22 @@ export function buildProductCard(product, index) {
 			</p>
 
 			<div>
-				<form method="post" class="d-review form-review">
+				<form method="post" class="d-inline form-review">
 				<input type="hidden" name="productId" value="${product.docId}">
 					<button class= "btn btn-outline-primary" type="submit">Reviews</button> 
 				</form>
 			</div>
+
+			<div>
+			<form method="post" class="d-inline form-fav">
+			<input type="hidden" name="index" value="${index}">
+				<button class= "btn btn-outline-primary" type="submit">Favorite</button> 
+			</form>
+			</div>
+
 			<br>
 
-			<div class="container pt-3 bg-light ${Auth.currentUser ? 'd-block' : 'd-none'}">
+			<div class="container pt-3 bg-dark ${Auth.currentUser ? 'd-block' : 'd-none'}">
 				<form method="post" class="d-inline form-dec-qty"> 
 					<input type="hidden" name="index" value="${index}">
 					<button class= "btn btn-outline-danger" type="submit">&minus;</button>  

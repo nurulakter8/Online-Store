@@ -6,6 +6,7 @@ export const collectioNames = {
 	PURCHASE_HISTORY: 'purchase_history',
 	ACCOUNT_INFO: 'account_info',
 	REPLIES: 'replies' ,
+	WISH: 'wishList'
 }
 
 export const storageFolderNames = {

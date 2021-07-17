@@ -5,6 +5,8 @@ import * as Profile from '../view/profile_page.js'
 import * as Review from '../view/review_page.js'
 import * as Search from '../view/search_page.js'
 import * as Check from '../view/checkout_page.js'
+import * as Wish from '../view/wishlist_page.js'
+
 
 
 
@@ -15,7 +17,8 @@ export const routePathname = {
 	REVIEW: '/review',
 	CART: '/cart',
 	SEARCH: '/search',
-	CHECK: '/check'
+	CHECK: '/check',
+	WISH: '/wish',
 }
 
 export const routes = [
@@ -26,6 +29,7 @@ export const routes = [
 	{ pathname: routePathname.CART, page: Cart.cart_page },
 	{pathname: routePathname.SEARCH, page: Search.search_page},
 	{pathname: routePathname.CHECK, page: Check.donate_page},
+	{pathname: routePathname.WISH, page: Wish.wishlist_page},
 
 ];
 
