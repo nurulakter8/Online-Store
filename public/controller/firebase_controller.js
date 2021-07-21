@@ -5,11 +5,11 @@ import { Products } from '../model/Product.js';
 import { Reply } from '../model/Reply.js';
 import { ShoppingCart } from '../model/ShoppingCart.js';
 
-export async function signIn (email, password){
-	await firebase.auth().signInWithEmailAndPassword(email,password);
+export async function signIn(email, password) {
+	await firebase.auth().signInWithEmailAndPassword(email, password);
 }
 
-export async function signOut (){
+export async function signOut() {
 	await firebase.auth().signOut();
 
 }
@@ -18,11 +18,11 @@ export async function resetPassword(email) {
 	await firebase.auth().sendPasswordResetEmail(email)
 }
 
-export async function getProductList(){
+export async function getProductList() {
 	const products = [];
 	const snapShot = await firebase.firestore().collection(Constant.collectioNames.PRODUCTS)
-	.orderBy('name')
-	.get();
+		.orderBy('name')
+		.get();
 
 	snapShot.forEach(doc => {
 		const p = new Products(doc.data());
@@ -32,17 +32,17 @@ export async function getProductList(){
 	return products;
 }
 
-export async function checkOut(cart){
+export async function checkOut(cart) {
 	const data = cart.serialize(Date.now());
 	await firebase.firestore().collection(Constant.collectioNames.PURCHASE_HISTORY)
-				.add(data);
+		.add(data);
 }
 
-export async function getPurchaseHistory(uid){
+export async function getPurchaseHistory(uid) {
 	const snapShot = await firebase.firestore().collection(Constant.collectioNames.PURCHASE_HISTORY)
-						.where('uid', '==', uid)
-						.orderBy('timestamp', 'desc')
-						.get();
+		.where('uid', '==', uid)
+		.orderBy('timestamp', 'desc')
+		.get();
 
 	const carts = [];
 	snapShot.forEach(doc => {
@@ -52,31 +52,31 @@ export async function getPurchaseHistory(uid){
 	return carts;
 }
 
-export async function createUser(email, password){
-	await firebase.auth().createUserWithEmailAndPassword(email,password);
+export async function createUser(email, password) {
+	await firebase.auth().createUserWithEmailAndPassword(email, password);
 }
 
 export async function getAccountInfo(uid) {
 	const doc = await firebase.firestore().collection(Constant.collectioNames.ACCOUNT_INFO)
-					.doc(uid).get();
+		.doc(uid).get();
 	if (doc.exists) {
 		return new AccountInfo(doc.data());
 	} else {
 		const defaultInfo = AccountInfo.instance();
 		await firebase.firestore().collection(Constant.collectioNames.ACCOUNT_INFO)
-				.doc(uid).set(defaultInfo.serialize());
+			.doc(uid).set(defaultInfo.serialize());
 		return defaultInfo;
 	}
 }
 
-export async function updateaAccountInfo(uid, updateInfo){
+export async function updateaAccountInfo(uid, updateInfo) {
 	await firebase.firestore().collection(Constant.collectioNames.ACCOUNT_INFO)
-			.doc(uid).update(updateInfo);
+		.doc(uid).update(updateInfo);
 }
 
-export async function uploadProfilePhoto(photoFile, imageName){
+export async function uploadProfilePhoto(photoFile, imageName) {
 	const ref = firebase.storage().ref()
-					.child(Constant.storageFolderNames.PROFILE_PHOTOS + imageName)
+		.child(Constant.storageFolderNames.PROFILE_PHOTOS + imageName)
 	const taskSnapShot = await ref.put(photoFile);
 	const photoURL = await taskSnapShot.ref.getDownloadURL();
 	return photoURL;
@@ -138,4 +138,13 @@ export async function deleteForm(form) {
 		.collection(Constant.collectioNames.PURCHASE_HISTORY)
 		.doc(form)
 		.delete();  // sql = primary key
+}
+
+export async function deleteProduct(docId, imageName) {
+	try {
+		await firebase.firestore().collection(Constant.collectioNames.PRODUCTS)
+			.doc(docId).delete();
+	} catch (e) {
+		if (Constant.DEV) console.log(e)
+	}
 }

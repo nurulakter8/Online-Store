@@ -121,8 +121,20 @@ export function addEventListneres(){
 			Util.info('Error, try different Email', JSON.stringify(error), Element.modalResetPasswordForm);
 		}
 	})
+}
 
+export async function delete_product(docId, imageName){
+	try {
+		await FirebaseController.deleteProduct(docId, imageName);
+		//update browser
+		//const cardTag = document.getElementById('card-'+docId);
+		// cardTag.remove();
 
-
-
+		Util.info('Deleted!', `${docId} has been deleted`);
+		await Home.home_page();
+	} catch (e) {
+		if(Constant.DEV) console.log(e);
+		Util.info('Delete product error', JSON.stringify(e));
+		
+	}
 }

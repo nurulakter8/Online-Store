@@ -45,7 +45,7 @@ export async function home_page() {
 		Util.info('cannot get product list', JSON.stringify(e));
 		return;
 	}
-/// wish
+	/// wish
 
 	// try {
 	// 	productsWish = await FirebaseController.getProductList();
@@ -116,6 +116,19 @@ export async function home_page() {
 			Review.addViewFormSubmitEvent(reviewForm[i])
 		})
 	}
+
+	const deleteForms = document.getElementsByClassName('form-delete-product');
+	for (let i = 0; i < deleteForms.length; i++) {
+		deleteForms[i].addEventListener('submit', async e=>{
+			e.preventDefault();
+			if(!window.confirm("Press OK to delete")) return; // cancle button pressed
+			const button = e.target.getElementsByTagName('button')[0];
+			const label = Util.disableButton(button)
+			await Auth.delete_product(e.target.docId.value, e.target.imageName.value);
+			Util.enableButton(button, label);
+		});
+		
+	}
 }
 
 export function buildProductCard(product, index) {
@@ -141,6 +154,14 @@ export function buildProductCard(product, index) {
 				<button class= "btn btn-outline-primary" type="submit">Favorite</button> 
 			</form>
 			</div>
+
+			<div> 
+			<form class = "form-delete-product" method ="post">
+			<input type = "hidden" name="docId" value="${product.docId}">
+			<input type = "hidden" name="imageName" value="${product.imageName}">
+			<button class= "btn btn-outline-danger" type="submit">Delete</button>  
+			</form>
+			</div> 
 
 			<br>
 
